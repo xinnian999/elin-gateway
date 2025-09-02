@@ -1,0 +1,67 @@
+services:
+  elin-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/elin-gateway:latest
+    container_name: elin-gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+
+  elin-db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/elin-db:latest
+    container_name: elin-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306" # 为了方便本地直接调试线上数据库，对外暴露端口
+    volumes:
+      - mysql-data:/var/lib/mysql
+  
+  elin-db-pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: elin-db-pma
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=elin-db
+      - PMA_PORT=3306
+      - PMA_ABSOLUTE_URI=/pma/
+      - UPLOAD_LIMIT=64M
+
+  elin-blog:
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/elin-blog:latest
+    container_name: elin-blog
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=elin-db
+      - DB_PORT=3306
+      - DB_NAME=blog
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+  elin-blog-admin:
+    container_name: elin-blog-admin
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/elin-blog-admin:latest
+    restart: unless-stopped
+
+  vue-form-craft:
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/vue-form-craft:latest
+    container_name: vue-form-craft
+    restart: unless-stopped
+
+  threejs-manual:
+    image: crpi-a7p27yxlrmekg1a3.cn-beijing.personal.cr.aliyuncs.com/elin/threejs-manual:latest
+    container_name: threejs-manual
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local

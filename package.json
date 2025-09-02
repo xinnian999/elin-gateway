@@ -1,0 +1,21 @@
+{
+  "name": "elin-gateway",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "docker compose build",
+    "pull": "docker compose pull",
+    "push": "docker compose push",
+    "push-compose": "node push-compose.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "ssh2-sftp-client": "^12.0.1"
+  }
+}
