@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import fs from 'fs';
 import path from 'path';
 import Client from 'ssh2-sftp-client';
 
@@ -10,7 +9,7 @@ const config = {
   host: '8.141.86.20',
   port: 22,
   username: 'root',
-  privateKey: fs.readFileSync(process.env.RSA_PATH)
+  password: process.env.SERVER_PASSWORD
 };
 
 // 本地 docker-compose 文件路径
